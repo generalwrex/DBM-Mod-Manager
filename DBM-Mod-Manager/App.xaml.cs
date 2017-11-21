@@ -13,5 +13,6 @@ namespace DBM_Mod_Manager
     /// </summary>
     public partial class App : Application
     {
+
     }
 }

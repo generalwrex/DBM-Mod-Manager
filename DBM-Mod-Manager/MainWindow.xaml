@@ -8,7 +8,7 @@
         x:Name="window"
         mc:Ignorable="d" Height="506.644" Width="731.818" Loaded="Window_Loaded" Topmost="True" AllowsTransparency="True" WindowStyle="None"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    
+
     <WindowChrome.WindowChrome>
         <WindowChrome x:Name="chrome" ResizeBorderThickness="5" CaptionHeight="25" GlassFrameThickness="10,10,10,10" CornerRadius="0" UseAeroCaptionButtons="True"/>
     </WindowChrome.WindowChrome>
@@ -35,7 +35,7 @@
                 </MenuItem>
             </Menu>
             <TabControl>
-                <TabItem Header="Current Mods">
+                <TabItem Header="Manage Mods">
                     <Grid>
                         <Grid.Background>
                             <SolidColorBrush Color="{DynamicResource DisabledBackgroundColor}"/>
@@ -45,21 +45,47 @@
                             <RowDefinition Height="352*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Width="714" Orientation="Horizontal">
-                            <Button Content="Remove Mod" Width="84"/>
+                            <Button Content="Refresh" Width="84" Click="Button_Click"/>
                             <Button Content="Check For Update" Width="111"/>
                         </StackPanel>
-                        <ListView Grid.Row="1" x:Name="lvMods" Background="{DynamicResource CheckBoxFillNormal}" >
-                            <ListView.View>
-                                <GridView AllowsColumnReorder="True">
-                                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Name" Width="65"/>
-                                    <GridViewColumn DisplayMemberBinding="{Binding Path=Author}" Header="Author" Width="60"/>
-                                </GridView>
-                            </ListView.View>
+
+                        <StackPanel Width="714" Height="50" Orientation="Horizontal">
+
+                        </StackPanel>
+
+                        <ListView Grid.Row="1" x:Name="lvMods" Background="{DynamicResource CheckBoxFillNormal}"
+                            IsSynchronizedWithCurrentItem="True" Margin="0,27,4,0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <CheckBox IsChecked="{Binding Enabled}" Width="40" VerticalAlignment="Top" Margin="5,2,5,0" Height="13" FontSize="8" Padding="1,0,1,1"/>
+                                        <TextBlock DockPanel.Dock="Left" Width="150" MaxWidth="150" Text="{Binding Name}"   VerticalAlignment="Top"></TextBlock>
+                                        <TextBlock DockPanel.Dock="Left" Width="144" MaxWidth="144" Text="{Binding Section}"   VerticalAlignment="Top" HorizontalAlignment="Left"></TextBlock>
+                                        <TextBlock DockPanel.Dock="Left" Width="180" MaxWidth="180" Text="" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                        <TextBlock DockPanel.Dock="Left" Width="180" MaxWidth="180" Text="{Binding Dependencies}"  VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
                         </ListView>
+                        <DockPanel Height="22" Margin="4,5,0,0" Grid.Row="1" VerticalAlignment="Top" >
+                            <TextBlock DockPanel.Dock="Left" Width="50" MaxWidth="50" Text="Active"  VerticalAlignment="Top"></TextBlock>
+                            <TextBlock DockPanel.Dock="Left" Width="150" MaxWidth="150" Text="Mod Name"  VerticalAlignment="Top"></TextBlock>
+                            <TextBlock DockPanel.Dock="Left" Width="144" MaxWidth="144" Text="Section" VerticalAlignment="Top" HorizontalAlignment="Left"></TextBlock>
+                            <TextBlock DockPanel.Dock="Left" Width="180" MaxWidth="180" Text="Dependencies"  VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                            <TextBlock DockPanel.Dock="Left" Width="180" MaxWidth="180" Text="Node Modules"  VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        </DockPanel>
+
                     </Grid>
                 </TabItem>
-                <TabItem Header="Install Mods">
-                    <Grid Background="#FFE5E5E5"/>
+                <TabItem Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="79">
+                    <DockPanel>
+                        <CheckBox Width="40" VerticalAlignment="Top" Margin="5,2,5,0" Height="13" Content="Active" FontSize="9" Padding="1,0,1,1"/>
+                        <TextBlock DockPanel.Dock="Left" Width="150" MaxWidth="150" Text="p{Binding Name}"  VerticalAlignment="Top"></TextBlock>
+                        <TextBlock DockPanel.Dock="Left" Width="144" MaxWidth="144" Text="p{Binding Section}" VerticalAlignment="Top" HorizontalAlignment="Left"></TextBlock>
+                        <TextBlock DockPanel.Dock="Left" Width="180" MaxWidth="180" Text=""  VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <TextBlock DockPanel.Dock="Left" Width="180" MaxWidth="180" Text="p{Binding Dependencies}"  VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    </DockPanel>
+
                 </TabItem>
             </TabControl>
         </DockPanel>

@@ -1,8 +1,10 @@
-﻿using DBM_Mod_Manager.Models;
+﻿using DBM_Mod_Manager.Actions;
+using Octokit;
+using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace DBM_Mod_Manager
 {
@@ -11,14 +13,21 @@ namespace DBM_Mod_Manager
     /// </summary>
     public partial class MainWindow : Window
     {
+        private GitHubClient _git = new GitHubClient(new ProductHeaderValue("DBM-Mods"));
+
         public class ModItem
         {
+            public int Id { get; set; }
+            public bool Enabled { get; set; }
             public string Name { get; set; }
+            public string FileName { get; set; }
+            public string Section { get; set; }
+            public string Dependencies { get; set; }
+
             public string Author { get; set; }
             public string Version { get; set; }
             public string LatestVersion { get; set; }
             public string DBMVersion { get; set; }
-            public string Dependencies { get; set; }
         }
 
         public ObservableCollection<ModItem> ModItems { get; set; }
@@ -32,28 +41,40 @@ namespace DBM_Mod_Manager
 
             this.ModItems = new ObservableCollection<ModItem>();
 
-            ModItems.Add(new ModItem()
-            {
-                Name = "My Mod",
-                Author = "generalwrex",
-                Version = "1.0.0",
-                LatestVersion = "1.0.0",
-                DBMVersion = "Latest",
-                Dependencies = "node.js"
-            });
-
-            ModItems.Add(new ModItem()
-            {
-                Name = "My Mod 2",
-                Author = "generalwrex",
-                Version = "1.0.0",
-                LatestVersion = "1.0.0",
-                DBMVersion = "Latest",
-                Dependencies = "node.js"
-            });
+            
+            AddModsToList();
 
             lvMods.ItemsSource = ModItems;
+
         }
+
+        private void AddModsToList()
+        {
+            var modParser = new ModParser();
+
+            var path = @"D:\Steam\steamapps\common\Discord Bot Maker\actions";
+
+            modParser.LoadAllScripts(path);
+
+            var mods = modParser.JSMods;
+
+            foreach (var item in mods)
+            {
+                ModItems.Add(new ModItem()
+                {
+                    Id = mods.IndexOf(item),
+                    Enabled = true,
+                    Name = item.Name,
+                    Author = item.Author,
+                    Section = item.Section,
+                    FileName = item.FileName,
+                    Dependencies = string.Join(",", item.Dependencies.ToArray())
+                });
+
+            }
+        }
+
+        #region test
 
         private void lvModsColumnHeader_Click(object sender, RoutedEventArgs e)
         {
@@ -61,8 +82,6 @@ namespace DBM_Mod_Manager
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
-           
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -90,5 +109,15 @@ namespace DBM_Mod_Manager
         {
             window.WindowState = WindowState.Minimized;
         }
+
+        #endregion test
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ModItems.Clear();
+            AddModsToList();
+        }
+
+
     }
 }

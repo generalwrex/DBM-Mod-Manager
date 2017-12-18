@@ -5,6 +5,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.JScript;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 
 namespace DBM_Mod_Manager
 {
@@ -22,12 +25,15 @@ namespace DBM_Mod_Manager
             public string Name { get; set; }
             public string FileName { get; set; }
             public string Section { get; set; }
+            public string Description { get; set; }
+            public string DependsOn { get; set; }
             public string Dependencies { get; set; }
 
             public string Author { get; set; }
             public string Version { get; set; }
             public string LatestVersion { get; set; }
             public string DBMVersion { get; set; }
+
         }
 
         public ObservableCollection<ModItem> ModItems { get; set; }
@@ -41,11 +47,10 @@ namespace DBM_Mod_Manager
 
             this.ModItems = new ObservableCollection<ModItem>();
 
-            
             AddModsToList();
 
             lvMods.ItemsSource = ModItems;
-
+       
         }
 
         private void AddModsToList()
@@ -58,20 +63,30 @@ namespace DBM_Mod_Manager
 
             var mods = modParser.JSMods;
 
-            foreach (var item in mods)
+            try
             {
-                ModItems.Add(new ModItem()
+                foreach (var item in mods)
                 {
-                    Id = mods.IndexOf(item),
-                    Enabled = true,
-                    Name = item.Name,
-                    Author = item.Author,
-                    Section = item.Section,
-                    FileName = item.FileName,
-                    Dependencies = string.Join(",", item.Dependencies.ToArray())
-                });
+                    ModItems.Add(new ModItem()
+                    {
+                        Id = mods.IndexOf(item),
+                        Enabled = true,
+                        Name = item.Name,
+                        Author = item.Author,
+                        Section = item.Section,
+                        Description = item.Description,
+                        FileName = item.FileName,
+                        DependsOn = item.DependsOnMods == null ? "" : string.Join(",", item.DependsOnMods?.ToArray()),
+                        Dependencies = item.Dependencies == null ? "" : string.Join(",", item.Dependencies?.ToArray())
+                    });
 
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+           
         }
 
         #region test

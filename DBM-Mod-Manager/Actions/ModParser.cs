@@ -12,37 +12,35 @@ namespace DBM_Mod_Manager.Actions
         {
             public string FileName;
             public string Name;
+            public string Version;
             public string Author;
             public string Section;
-            public bool CommandOnly;
+            public string Description;
+
             public List<string> Dependencies;
+            public List<string> DependsOnMods;
 
             public JSMod()
             {
                 FileName = "";
-                Name = "Unnamed";
-                Section = "None";
-                CommandOnly = false;
-                Dependencies = new List<string>();
+                Name = "";
+                Section = "";
+                Author = "";
+                Version = "";
+                Description = "";
+                Dependencies = null;
+                DependsOnMods = null;
             }
 
-            public JSMod(string fileName, string name,string section, bool commandOnly, List<string> dependencies)
-            {
-                FileName = fileName;
-                Name = name;
-                Section = section;
-                CommandOnly = commandOnly;
-                Dependencies = dependencies ?? new List<string>();
-            }
         }
 
         public List<JSMod> JSMods = new List<JSMod>();
 
         public JSMod DefaultMod = new JSMod();
 
-        private string ParseName(string input)
+        private string ParseStringVar(string name, string input)
         {
-            string pattern = @"^(?:.*name)(?:.*[""|'])(.*)(?:""|')(?:,|;)";
+            string pattern = @"^(?:.*" + name + @")(?:.*[""|'])(.*)(?:""|')(?:,|;)";
 
             Match match = Regex.Match(input, pattern);
             if (match.Success && match.Groups.Count > 1)
@@ -51,22 +49,11 @@ namespace DBM_Mod_Manager.Actions
             return null;
         }
 
-        private string ParseSection(string input)
-        {
-            string pattern = @"^(?:.*section)(?:.*[""|'])(.*)(?:""|')(?:,|;)";
-
-            Match match = Regex.Match(input, pattern, RegexOptions.CultureInvariant);
-            if (match.Success && match.Groups.Count > 1)
-                return match.Groups[1]?.Value;
-
-            return null;
-        }
-
-        private List<string> ParseDependencies(string input)
+        private List<string> ParseArrayVar(string name, string input)
         {
             List<string> list = new List<string>();
 
-            string pattern = @"^(?:.*dependencies)(?:.*)\[(.*)\](?:,|;)";
+            string pattern = @"^(?:.*" + name + @")(?:.*)\[(.*)\](?:,|;)";
 
             Match match = Regex.Match(input, pattern);
             if (match.Success && match.Groups.Count > 1)
@@ -78,13 +65,14 @@ namespace DBM_Mod_Manager.Actions
                     if (deps?.Length > 0)
                         foreach (string dep in deps)
                             if (!String.IsNullOrEmpty(dep))
-                                list.Add(dep.Trim('"', '\''));
+                                list.Add(dep.Trim('"', '\'').Replace("\"", "").Replace("\'",""));
 
                     return list;
                 }
             }
             return null;
         }
+
 
         public void LoadAllScripts(string path)
         {
@@ -99,7 +87,6 @@ namespace DBM_Mod_Manager.Actions
             }
         }
 
-
         public JSMod LoadScript(string file)
         {
             try
@@ -108,34 +95,40 @@ namespace DBM_Mod_Manager.Actions
                 {
                     JSMod mod = new JSMod();
 
-                    string name = "", section = "";
-                    List<string> dependencies = null;
+                    mod.FileName = Path.GetFileNameWithoutExtension(file);
 
                     while (r.Peek() >= 0)
                     {
                         var line = Regex.Unescape(r.ReadLine());
 
-                        if(String.IsNullOrEmpty(name))
-                            name = ParseName(line);
+                        if (String.IsNullOrEmpty(mod.Name))
+                            mod.Name = ParseStringVar("name", line);
 
-                        if (String.IsNullOrEmpty(section))
-                            section = ParseSection(line);
+                        if (String.IsNullOrEmpty(mod.Section))
+                            mod.Section = ParseStringVar("section", line);
 
-                        if(dependencies == null)
-                            dependencies = ParseDependencies(line);
+                        if (String.IsNullOrEmpty(mod.Author))
+                            mod.Author = ParseStringVar("author", line);
+
+                        if (String.IsNullOrEmpty(mod.Description))
+                            mod.Description = ParseStringVar("short_description", line);
+
+                        if (String.IsNullOrEmpty(mod.Version))
+                            mod.Version = ParseStringVar("version", line);
+
+                        if (mod.Dependencies == null)
+                            mod.Dependencies = ParseArrayVar("dependencies", line);
+
+                        if (mod.DependsOnMods == null)
+                            mod.DependsOnMods = ParseArrayVar("depends_on_mods", line);
                     }
 
-                    if (!String.IsNullOrEmpty(name))
-                    {
-                        return new JSMod(Path.GetFileNameWithoutExtension(file), name, section, true, dependencies);
-                    }
-                                          
+                    return mod;                  
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-               
             }
 
             return null;

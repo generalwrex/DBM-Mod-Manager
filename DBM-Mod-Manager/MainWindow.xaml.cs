@@ -9,6 +9,9 @@ using Microsoft.JScript;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
+using DBM_Mod_Manager.Models;
+using System.Linq;
+
 namespace DBM_Mod_Manager
 {
     /// <summary>
@@ -18,25 +21,9 @@ namespace DBM_Mod_Manager
     {
         private GitHubClient _git = new GitHubClient(new ProductHeaderValue("DBM-Mods"));
 
-        public class ModItem
-        {
-            public int Id { get; set; }
-            public bool Enabled { get; set; }
-            public string Name { get; set; }
-            public string FileName { get; set; }
-            public string Section { get; set; }
-            public string Description { get; set; }
-            public string DependsOn { get; set; }
-            public string Dependencies { get; set; }
-
-            public string Author { get; set; }
-            public string Version { get; set; }
-            public string LatestVersion { get; set; }
-            public string DBMVersion { get; set; }
-
-        }
 
         public ObservableCollection<ModItem> ModItems { get; set; }
+        public ObservableCollection<ModItem> ModItems2 { get; set; }
 
         public MainWindow()
         {
@@ -47,17 +34,19 @@ namespace DBM_Mod_Manager
 
             this.ModItems = new ObservableCollection<ModItem>();
 
-            AddModsToList();
+            lvMods.ItemsSource = AddModsToList(@"D:\Steam\steamapps\common\Discord Bot Maker\actions").OrderBy(x => x.Section);
 
-            lvMods.ItemsSource = ModItems;
-       
+
+            lvMods2.ItemsSource = AddModsToList(@"F:\Wrex\Desktop\DBM-Mods\actions").OrderBy(x => x.Section);
+
+            ;
         }
 
-        private void AddModsToList()
+        private ObservableCollection<ModItem> AddModsToList(string path)
         {
-            var modParser = new ModParser();
+            var templist = new ObservableCollection<ModItem>();
 
-            var path = @"D:\Steam\steamapps\common\Discord Bot Maker\actions";
+            var modParser = new ModParser();
 
             modParser.LoadAllScripts(path);
 
@@ -67,11 +56,13 @@ namespace DBM_Mod_Manager
             {
                 foreach (var item in mods)
                 {
-                    ModItems.Add(new ModItem()
+                    templist.Add(new ModItem()
                     {
                         Id = mods.IndexOf(item),
                         Enabled = true,
                         Name = item.Name,
+                        CurrentVersion = string.IsNullOrEmpty(item.Version) ? "1.0.0" : item.Version,
+                        LatestVersion = string.IsNullOrEmpty(item.Version) ? "1.0.0" : item.Version,
                         Author = item.Author,
                         Section = item.Section,
                         Description = item.Description,
@@ -81,12 +72,15 @@ namespace DBM_Mod_Manager
                     });
 
                 }
+
+                return templist;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
-           
+
+            return new ObservableCollection<ModItem>();
         }
 
         #region test
@@ -130,9 +124,33 @@ namespace DBM_Mod_Manager
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ModItems.Clear();
-            AddModsToList();
+            lvMods.ItemsSource = AddModsToList(@"D:\Steam\steamapps\common\Discord Bot Maker\actions").OrderBy(x => x.Section);
         }
 
 
+        private void Section_Sort_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            lvMods.ItemsSource = new ObservableCollection<ModItem>(ModItems.OrderBy(s => s.Section));
+        }
+
+        private void Name_Sort_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            lvMods.ItemsSource = new ObservableCollection<ModItem>(ModItems.OrderBy(s => s.Name));
+        }
+
+        private void LV_Sort_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            lvMods.ItemsSource = new ObservableCollection<ModItem>(ModItems.OrderBy(s => s.LatestVersion));
+        }
+
+        private void CV_Sort_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            lvMods.ItemsSource = new ObservableCollection<ModItem>(ModItems.OrderBy(s => s.CurrentVersion));
+        }
+
+        private void Author_Sort_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            lvMods.ItemsSource = new ObservableCollection<ModItem>(ModItems.OrderBy(s => s.Author));
+        }
     }
 }

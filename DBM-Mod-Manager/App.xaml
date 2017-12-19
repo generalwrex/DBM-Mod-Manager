@@ -1,11 +1,12 @@
-﻿<Application x:Class="DBM_Mod_Manager.App"
+﻿<Application x:Uid="Application_1" x:Class="DBM_Mod_Manager.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <ResourceDictionary>
+        
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Themes\Styles.xaml" />
+                <ResourceDictionary x:Uid="ResourceDictionary_2" Source="Themes\Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

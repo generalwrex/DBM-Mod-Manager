@@ -7,9 +7,10 @@ using Octokit;
 
 namespace DBM_Mod_Manager.Actions
 {
-    public class Repos
+    public class RepoGetter
     {
         private GitHubClient GitHub = new GitHubClient(new ProductHeaderValue("HellionExtendedServer"));
 
     }
+
 }

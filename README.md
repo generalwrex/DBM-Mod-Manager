@@ -14,7 +14,7 @@ MitchDaGamer
 
 ![](https://www.patreon.com/generalwrex)
 
-
+![](https://i.gyazo.com/2925f2a19d4eed31968480fc652316c9.png)
 
 ![](https://i.gyazo.com/024317eb119a9d442b71ae85d5ed885c.gif)
 

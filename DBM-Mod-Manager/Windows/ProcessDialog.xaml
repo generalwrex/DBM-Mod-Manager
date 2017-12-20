@@ -1,0 +1,21 @@
+﻿<Window x:Uid="Window_1" x:Class="DBM_Mod_Manager.Windows.ProcessDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xml:lang="en-US"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        ResizeMode="NoResize"
+        Title="SetupProcess" Height="300" Width="518.478" Background="{DynamicResource WindowBackgroundBrush}" BorderThickness="2" WindowStartupLocation="CenterScreen" AllowsTransparency="True" WindowStyle="None" Opacity="0.9" Visibility="Visible">
+    <WindowChrome.WindowChrome>
+        <WindowChrome x:Uid="chrome" x:Name="chrome" ResizeBorderThickness="5" CaptionHeight="25" GlassFrameThickness="10,10,10,10" CornerRadius="0" UseAeroCaptionButtons="True"/>
+    </WindowChrome.WindowChrome>
+    <Grid x:Uid="Grid_1">
+        <ProgressBar x:Uid="ProgressBar_1" Height="17" x:Name="ProgressBar" Margin="60,0,60,76" VerticalAlignment="Bottom"/>
+        <TextBlock x:Uid="TextBlock_1" x:Name="InfoBox" Margin="60,0,60,105" TextWrapping="Wrap" Text="Running Setup Process... " TextAlignment="Center" Foreground="WhiteSmoke" RenderTransformOrigin="0.232,0.39" Height="89" VerticalAlignment="Bottom" FontSize="18"/>
+        <TextBlock x:Uid="TextBlock_2" x:Name="Title"  Margin="10,43,10,0" TextWrapping="Wrap" Text="Discord Bot Maker Mod Manager" TextAlignment="Center" Foreground="WhiteSmoke" RenderTransformOrigin="0.232,0.39" Height="39" VerticalAlignment="Top" FontSize="24"/>
+        <TextBlock x:Uid="TextBlock_3" x:Name="ProgressInfo" Margin="60,0,60,25" TextWrapping="Wrap" Text="Syncing Mods From The Repository!" TextAlignment="Center" Foreground="WhiteSmoke" RenderTransformOrigin="0.232,0.39" Height="37" VerticalAlignment="Bottom"/>
+
+    </Grid>
+</Window>

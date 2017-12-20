@@ -11,6 +11,10 @@ using System.Collections.Generic;
 
 using DBM_Mod_Manager.Models;
 using System.Linq;
+using DBM_Mod_Manager.Managers;
+using DBM_Mod_Manager.Windows;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DBM_Mod_Manager
 {
@@ -21,6 +25,7 @@ namespace DBM_Mod_Manager
     {
         private GitHubClient _git = new GitHubClient(new ProductHeaderValue("DBM-Mods"));
 
+        DownloadManager spwindow;
 
         public ObservableCollection<ModItem> ModItems { get; set; }
         public ObservableCollection<ModItem> ModItems2 { get; set; }
@@ -28,6 +33,20 @@ namespace DBM_Mod_Manager
         public MainWindow()
         {
             InitializeComponent();
+
+            Config.AppPath = Path.Combine(Environment.CurrentDirectory, "data");
+
+            Config config = new Config();
+
+            if (!config.Settings.InitialSetupRan || config.Settings.BotProjectPath == "" || config.Settings.DBMRootPath == "")
+            {
+                var init = new InitialSetup(config);
+                init.ShowDialog();
+            }
+
+
+            spwindow = new DownloadManager();
+
 
             this.Title = "DBM Mods - Mod Manager";
             this.CustomTitleBar.Text = this.Title;
@@ -39,7 +58,7 @@ namespace DBM_Mod_Manager
 
             lvMods2.ItemsSource = AddModsToList(@"F:\Wrex\Desktop\DBM-Mods\actions").OrderBy(x => x.Section);
 
-            ;
+            
         }
 
         private ObservableCollection<ModItem> AddModsToList(string path)
@@ -151,6 +170,18 @@ namespace DBM_Mod_Manager
         private void Author_Sort_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             lvMods.ItemsSource = new ObservableCollection<ModItem>(ModItems.OrderBy(s => s.Author));
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {          
+            spwindow.DownloadLatestRelease();
+           
+        }
+
+        private void window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(spwindow != null)
+                spwindow.Close();
         }
     }
 }

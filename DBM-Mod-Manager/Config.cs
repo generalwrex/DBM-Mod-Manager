@@ -24,54 +24,29 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
+using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Mod_Installer
+namespace DBM_Mod_Manager
 {
     [Serializable]
     public class Settings
     {
-        [XmlIgnore]
-        public Dictionary<string, string> AvailableLanguages = new Dictionary<string, string>();
 
         [Description("The Root Directory of Discord Bot Maker")]
         public string DBMRootPath;
 
-        [Description("The Language of the UI elements (buttons, labels, etc), Note: some controls may not be localized to your language")]
-        public string ControlsLanguage;
-
         [Description("Bot project path")]
         public string BotProjectPath;
 
-        [Description("Any external sources of DBM Mods (git repository urls)")]
-        public List<string> ExternalModSources;
-
-        [Description("List of comma seperated values of files to ignore")]
-        public string GlobalIgnores;
-
-        [Description("Allow the installation of mods without manifests (Warning: this may add unneeded files!)")]
-        public bool AllowModsWithoutManifests;
-
-
-        [Description("Enable Verbose printing to the Log")]
-        public bool DebugMode;
+        public bool InitialSetupRan;
 
         public Settings()
         {
-            AvailableLanguages.Add("en-US", "English - United States");
-            AvailableLanguages.Add("de-DE", "German - Germany");
-
-            AllowModsWithoutManifests = true;
-
-            GlobalIgnores = "*.md, .git, LICENSE";
-
-
             DBMRootPath = "";
             BotProjectPath = "";
-            ControlsLanguage = "en-US";
-            ExternalModSources = new List<string>();
-            DebugMode = true;
+            InitialSetupRan = false;
         }
     }
 
@@ -97,7 +72,7 @@ namespace Mod_Installer
             }
         }
 
-        public Action<string, Exception> LogTargetMethod = Console.WriteLine;
+        public Action<string, Exception> LogTargetMethod = (msg, ex) => MessageBox.Show(ex != null ? msg + "\r\n "+ex.ToString() : msg, "Configuration");
 
         private void WriteLine(string msg, Exception ex = null) => LogTargetMethod(msg, ex);
 
@@ -138,7 +113,7 @@ namespace Mod_Installer
         {
             if (!File.Exists(FileName))
             {
-                WriteLine(FileName + " does not exist, creating one from defaults.");
+                //WriteLine(FileName + " does not exist, creating one from defaults.");
                 SaveConfiguration();
                 return true;
             }

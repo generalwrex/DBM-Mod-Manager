@@ -11,6 +11,7 @@
         MaxWidth="780"
         SizeToContent="Width" 
         Height="550"
+        Closing="window_Closing"
         mc:Ignorable="d"  Loaded="Window_Loaded" Topmost="True" AllowsTransparency="True" WindowStyle="None"
         DataContext="{Binding RelativeSource={RelativeSource Self}}" d:DesignHeight="517" d:DesignWidth="753">
 
@@ -54,7 +55,7 @@
                             <Button x:Uid="Button_3" DockPanel.Dock="Left" Height="50" Width="93" Click="Button_Click"  Margin="0,2,0,1">
                                 <TextBlock x:Uid="TextBlock_14" Text="Refresh" TextWrapping="Wrap" TextAlignment="Center"/>
                             </Button>
-                            <Button x:Uid="Button_4" DockPanel.Dock="Left" Height="50" Width="93"  Margin="0,2,0,1">
+                            <Button x:Uid="Button_4" DockPanel.Dock="Left" Height="50" Width="93"  Margin="0,2,0,1" Click="Button_Click_1">
                                 <TextBlock x:Uid="TextBlock_15" Text="Resync" TextWrapping="Wrap" TextAlignment="Center"/>
                             </Button>
                             <TextBlock x:Uid="TextBlock_7" DockPanel.Dock="Right" Text="Hello! BRO how are you doing" HorizontalAlignment="Right" Width="294"/>
